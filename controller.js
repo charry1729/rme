@@ -51,8 +51,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	// queryAllCars chaincode function - requires no arguments , ex: args: [''],
 	const request = {
 		//targets : --- letting this default to the peers assigned to the channel
-		chaincodeId: 'test4',
-		fcn: 'readUser',
+		chaincodeId: 'fabcar16wcpv5',
+		fcn: 'signup',
 		args: [req.params.Id]
 	};
 	console.log(req.params.Id)
@@ -144,53 +144,47 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
     console.log();
     var request = {
 		//targets: let default to the peer assigned to the client
-		chaincodeId: 'test4',
+		chaincodeId: 'fabcar16wcpv5',
 		fcn: 'signup',
 		args: [req.body.FirstName,
-req.body.LastName,
-req.body.UserName,
-req.body.AddressOne,
-req.body.AddressTwo,
-req.body.City,
-req.body.State,
-req.body.Country,
-req.body.PinCode,
-req.body.DOB,
-req.body.Contact,
-req.body.CompanyName,
-req.body.UserStatus,
-req.body.Occupations,
-req.body.Specializations,
-req.body.MarketPlaces,
-req.body.ParticipationTypes,
-req.body.MembershipPools,
-req.body.UserTypes,
-req.body.IsEmailVerified,
-req.body.KYCstatus,
-req.body.KYTstatus,
-req.body.RefferalCode,
-req.body.RefferedByCode,
-req.body.Id, 
-req.body.Password,
-req.body.PrivateKey,
-req.body.PublicKey,
-req.body.RmeUser,
-req.body.UserBackupPhrase,
-req.body.UserWalletAddress,
-req.body.Pancard ,
-req.body.KytdoctypeStatus,
-req.body.Pancardnotpresentflag,
-req.body.OtherOccupation,
-req.body.SupplierOf
-//req.body.UserSecretKey,
-//req.body.ObjectType,
- 
-
-],
+				req.body.LastName,
+				req.body.UserName,
+				req.body.AddressOne,
+				req.body.AddressTwo,
+				req.body.City,
+				req.body.State,
+				req.body.Country,
+				req.body.PinCode,
+				req.body.DOB,
+				req.body.Contact,
+				req.body.CompanyName,				
+				req.body.UserStatus,
+				JSON.stringify(req.body.Occupations),
+				JSON.stringify(req.body.Specializations),
+				JSON.stringify(req.body.MarketPlaces),
+				JSON.stringify(req.body.ParticipationTypes),
+				JSON.stringify(req.body.MembershipPools),
+				req.body.UserType,
+				req.body.IsEmailVerified,
+				req.body.KYCstatus,
+				req.body.KYTstatus,
+				req.body.RefferalCode,
+				req.body.RefferedByCode,
+				req.body.Password,
+				req.body.PrivateKey,
+				req.body.PublicKey,
+				req.body.UserBackupPhrase,
+				req.body.UserWalletAddress,
+				req.body.Kycdoctype,
+				req.body.PanCardUrl,
+				req.body.DocFrontUrl,
+				req.body.DocBackUrl,
+				req.body.OtherOccupation,
+				req.body.SupplierOf],
 		chainId: 'mychannel',
 		txId: tx_id
     };
-   // console.log(request)
+    console.log(request)
   //  console.log(req.body.InvoiceNo);
 	// send the transaction proposal to the peers
 	return channel.sendTransactionProposal(request);

@@ -23,54 +23,49 @@ type SimpleChaincode struct {
 type user struct {
 	ObjectType            string  `json:"docType"` //docType is used to distinguish the various types of objects in state database
         Uuid           string  `json:"Uuid"`            //SN-04
-        FirstName         string  `json:"FirstName"`
-        LastName           string  `json:"LastName"`
-        UserName         string  `json:"UserName"`
-        AddressOne           string  `json:"AddressOne"`
-        AddressTwo          string  `json:"AddressTwo"`
-        City           string  `json:"City"`
-        State               string  `json:"State"`
-        Country          string  `json:"Country"`
-        PinCode              string  `json:"Pincode"`
-        DOB           string  `json:"DOB"`
-        Contact     string  `json:"Contact"`
-        CompanyName        string  `json:"CompanyName"`
-
-        UserStatus   string  `json:"UserStatus"`
+        FirstName         string  `json:"firstName"`
+        LastName           string  `json:"lastName"`
+        UserName         string  `json:"userName"`
+        AddressOne           string  `json:"addressOne"`
+        AddressTwo          string  `json:"addressTwo"`
+        City           string  `json:"city"`
+        State               string  `json:"state"`
+        Country          string  `json:"country"`
+        PinCode              string  `json:"pincode"`
+        DOB           string  `json:"dob"`
+        Contact     string  `json:"contact"`
+        CompanyName        string  `json:"companyName"`
+        UserStatus   int `json:"userStatus"`
         
-        Occupations    []string  `json:"Occupations"`
-        Specializations         []string  `json:"Specializations"`
-        MarketPlaces            []string  `json:"MarketPlaces"`
-        ParticipationTypes            []string  `json:"ParticipationTypes"`
-        MembershipPools           []string  `json:"MembershipPools"`
-        UserTypes  string  `json:"UserTypes"`
-        IsEmailVerified      string  `json:"IsEmailVerified"`
-        KYCstatus         string `json:"KYCstatus"`
-        KYTstatus           string  `json:"KYTstatus"`
-        RefferalCode               string  `json:"RefferalCode"`
-        RefferedByCode  string  `json:"RefferedByCode"`
-//KYT
-        Pancard string `json:"pancard"`
-        KytdoctypeStatus          string     `json:"kytdoctypeStatus"`
-        Pancardnotpresentflag string `json:"pancardnotpresentflag"`
-        OtherOccupation            string  `json:"OtherOccupation"`
-        SupplierOf            string  `json:"SupplierOf"`
-        UserSecretKey                RmeUserSecretKey  `json:"UserSecretKey"`
+        Occupations    []int  `json:"occupations"`
+        Specializations         []int  `json:"specializations"`
+        MarketPlaces            []int  `json:"marketPlaces"`
+        ParticipationTypes            []int  `json:"participationTypes"`
+        MembershipPools           []int  `json:"membershipPools"`
+        UserTypes  string  `json:"userTypes"`
+        IsEmailVerified      string  `json:"isEmailVerified"`
+        KYCstatus         string `json:"kYCstatus"`
+        KYTstatus           string  `json:"kYTstatus"`
+        RefferalCode               string  `json:"refferalCode"`
+        RefferedByCode  string  `json:"refferedByCode"`
+        OtherOccupation            string  `json:"otherOccupation"`
+        SupplierOf            string  `json:"supplierOf"`
+        
+        Kycdoctype int  `json:"kycdoctype"`
+        PanCardUrl string  `json:"panCardUrl"`
+        DocFrontUrl string  `json:"docFrontUrl"`
+        DocBackUrl string  `json:"docBackUrl"`
+        UserSecretKey  RmeUserSecretKey  `json:"UserSecretKey"`
      }
 
 type RmeUserSecretKey struct {
         ObjectType string  `json:"docType"`
-        Id string  `json:"Id"`           
         Password string  `json:"Password"`
         PrivateKey string  `json:"PrivateKey"`
         PublicKey         string  `json:"PublicKey"`
-        RmeUser           string  `json:"RmeUser"`
         UserBackupPhrase          string  `json:"UserBackupPhrase"`
         UserWalletAddress           string  `json:"UserWalletAddress"`
  } 
-
-
-
 
 // ===================================================================================
 // Main
@@ -114,16 +109,12 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 // initUser - create a new User, store into chaincode state
 // ============================================================
 func (t *SimpleChaincode) signup(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-
-	//var poVal string
-
 	// if len(args) != 28 {
 	// 	return shim.Error("Incorrect number of arguments. Expecting 28")
 	// }
 
         fmt.Println("- start Signup user")
         
-      //  Uuid            :=  args[0]
         FirstName          :=  args[0]
         LastName           :=  args[1]
         UserName         :=  args[2]
@@ -141,34 +132,30 @@ func (t *SimpleChaincode) signup(stub shim.ChaincodeStubInterface, args []string
         if err != nil {
                 return shim.Error("userstatus argument must be a numeric string")
         }
-
-
         UserStatus := strconv.Itoa(Status1)
 
 
-		var oc []string 
+		var oc []int 
 		oc = append(oc,args[13])
 		Occupations    :=  oc
 		
-		var sp []string 
+		var sp []int 
 		sp = append(sp,args[14])
 		Specializations    :=  sp
 
-                var mp []string 
+                var mp []int 
 		mp = append(mp,args[15])
 		MarketPlaces    :=  mp
 		
-		var pt []string 
+		var pt []int 
 		pt = append(pt,args[16])
 		ParticipationTypes    :=  pt
 		
-		var mpl []string 
+		var mpl []int 
 		mpl = append(mpl,args[17])
 		MembershipPools    :=  mpl
 		
-		// MarketPlaces            :=  args[15]
-        // ParticipationTypes            :=  args[16]
-        // MembershipPools           :=  args[17]
+
         UserTypes :=  args[18]
         IsEmailVerified   :=  args[19]
         KYCstatus          :=  args[20]
@@ -177,62 +164,49 @@ func (t *SimpleChaincode) signup(stub shim.ChaincodeStubInterface, args []string
         RefferedByCode   :=  args[23]
              
        // var UserSecretKey RmeUserSecretKey
-	Id  := args[24]
-	Password    := args[25]
-	PrivateKey  := args[26]
-	PublicKey   := args[27]
-	RmeUser := args[28]
-	UserBackupPharse  := args[29]
-        UserWalletAddress  := args[30]
+	Password    := args[24]
+	PrivateKey  := args[25]
+	PublicKey   := args[26]
+	UserBackupPharse  := args[27]
+        UserWalletAddress  := args[28]
           
-        Pancard := args[31]
-        DocStatus1,err := strconv.Atoi(args[32])
+        Pancard := args[29]
+// //	Status:= stats(Status1)
+
+        OtherOccupation:= args[30]
+        SupplierOf:= args[31]
+
+        //Kycdoctype := args[32]
+        KycdoctypeStatus,err := strconv.Atoi(args[32])
         if err != nil {
-                return shim.Error("doc type argument must be a numeric string")
+                return shim.Error("KycdoctypeStatus argument must be a numeric string")
         }
-        
-//	Status:= stats(Status1)
+        Kycdoctype := strconv.Itoa(KycdoctypeStatus)
 
-        KytdoctypeStatus := strconv.Itoa(DocStatus1)
-        Pancardnotpresentflag := args[33]
-        OtherOccupation:= args[34]
-        SupplierOf:= args[35]
+        PanCardUrl :=args[33]
+        DocFrontUrl :=args[34]
+        DocBackUrl :=args[35]
 
-
-	uObjectType := "remusersecretkey"
+	uObjectType := "rmeusersecretkey"
         UserSecretKey := RmeUserSecretKey{uObjectType,	  
-                  Id,
 		  Password,
 		  PrivateKey,
 		  PublicKey,
-		  RmeUser,
 		  UserBackupPharse,
                   UserWalletAddress}
-
-          
-//KycdoctypeStatus 
-
-        //   kytStatus3,err := strconv.Atoi(args[30])
-        //           if err != nil {
-        //                   return shim.Error("10th argument must be a numeric string")
-        //           }
-                  
-        //   //	Status:= stats(Status1)
-                    
-        //   kytStatus4:= strconv.Itoa(kytStatus3)
 
 
 				objectType := "user"
                                 user := user{objectType, UserName, FirstName, LastName, UserName, AddressOne, AddressTwo, City , State,
                                          Country , PinCode, DOB, Contact, CompanyName, UserStatus, Occupations , Specializations, MarketPlaces, 
 					ParticipationTypes, MembershipPools, UserTypes, IsEmailVerified,KYCstatus,KYTstatus, RefferalCode, 
-					RefferedByCode, Pancard,KytdoctypeStatus,Pancardnotpresentflag,OtherOccupation,SupplierOf,UserSecretKey}  //SN-04	
+                                        RefferedByCode, Pancard,KytdoctypeStatus,Pancardnotpresentflag,OtherOccupation,SupplierOf,Kycdoctype,
+                                        PanCardUrl,DocFrontUrl,DocBackUrl,UserSecretKey}  	
 				userJSONasBytes, err3 := json.Marshal(user)
 				if err3 != nil {
 					return shim.Error(err3.Error())
 				}
 
-			// === Save invoice to state ===
 				err4 := stub.PutState(UserName, userJSONasBytes)
 				if err4 != nil {
 					return shim.Error(err4.Error())
