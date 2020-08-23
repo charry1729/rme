@@ -16,7 +16,7 @@
     "Country" : "India",
     "PinCode" : "500050",
     "DOB" : "29-07-2019",
-    "Contact" : "9985858305",
+    "Contact" : "",
     "CompanyName":"abc9",
     "UserStatus" : "2",
     "Occupations" : "2",
